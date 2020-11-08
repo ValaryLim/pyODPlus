@@ -200,23 +200,26 @@ class ROCF():
             # define queue to store mutual neighbours of cluster
             mutual_neighbours = Queue()
             mutual_neighbours.put(i)
+            visited[i] = True
+            cluster_labels[i] = label
 
             # define cluster group
             current_cluster = set()
+            current_cluster.add(i)
 
             # while there still exists mutual neighbours
             while not mutual_neighbours.empty():
                 # retrieve next mutual neighbour
                 v = mutual_neighbours.get()
 
-                # mark as visited, label cluster and add to group
-                visited[v] = True
-                cluster_labels[v] = label
-                current_cluster.add(v)
-
                 # find all unvisited mutual neighbours of v
                 for v_neighbours in k_nearest_neighbours[v]:
                     if (v in k_nearest_neighbours[v_neighbours]) and (not visited[v_neighbours]):
+                        # mark as visited, label cluster group
+                        visited[v_neighbours] = True
+                        cluster_labels[v] = label
+                        current_cluster.add(v)
+
                         # if v is a mutual neighbour and is not visited
                         mutual_neighbours.put(v_neighbours)
             
