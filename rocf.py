@@ -3,6 +3,7 @@ import numpy as np
 from scipy.spatial.distance import cityblock, euclidean # distance metrics
 from heapq import heappush, heappop # priority queue
 from queue import Queue # queue
+import matplotlib.pyplot as plt # graph
 
 class ROCF():
     def __init__(self, distance_metric="euclidean", k=3, threshold=0.1):
@@ -74,12 +75,12 @@ class ROCF():
         cluster_labels, cluster_groups = self._retrieve_clusters_mung(X, k_nearest_neighbours)
 
         # compute outliers
-        outliers, transition_levels, rocfs = self._compute_outliers_rocf(X, cluster_groups)
+        outliers, transition_levels, rocfs, cluster_groups_sorted = self._compute_outliers_rocf(X, cluster_groups)
 
         # update self object
         self.k_nearest_neighbours = k_nearest_neighbours
         self.cluster_labels = cluster_labels
-        self.cluster_groups = cluster_groups
+        self.cluster_groups = cluster_groups_sorted
         self.outliers = outliers
         self.transition_levels = transition_levels
         self.rocfs = rocfs
@@ -296,7 +297,7 @@ class ROCF():
                 for v in self._get_cluster_points(cluster_groups_sorted[i]):
                     outliers[v] = 1 # tag points in outlier clusters
         
-        return np.array(outliers), np.array(transition_levels), np.array(rocfs)
+        return np.array(outliers), np.array(transition_levels), np.array(rocfs), np.array(cluster_groups_sorted)
 
     def get_outliers(self):
         return self.outliers
@@ -333,3 +334,12 @@ class ROCF():
     
     def get_distance_metric(self):
         return self.distance_metric
+
+    def plot_decision_graph(self):
+        # retrieve rocf
+        rocfs = self.get_rocfs()
+
+        # plot graph
+        plt.figure(figsize=(20,10))
+        plt.scatter([i for i in range(len(rocfs))], rocfs)
+        plt.show()
