@@ -92,3 +92,59 @@ def generate_synthetic_d2():
     y.extend([1]*len(X_rand))
 
     return np.array(X), np.array(y)
+
+def generate_synthetic_d3():
+    def polynomial1(x):
+        return 0.01*(x-270)**2 + 190
+
+    def polynomial2(x):
+        return -0.01*(x-270)**2 + 150
+
+    def polynomial3(y):
+        return -0.01*(y-170)**2 + 240
+
+    def polynomial4(y):
+        return 0.01*(y-170)**2 + 300
+
+    def accept_point(x, y): 
+        '''
+        Function to determine which normal points to accept 
+        (Reject points not within area encapsulated by 4 polynomials)
+        '''
+        return ((polynomial1(x) > y) and (polynomial2(x) < y) and (polynomial3(y) < x) and (polynomial4(y) > x))
+    
+    np.random.seed(seed=321)
+    points = np.random.rand(826, 2)
+    points_scaled = [[x[0] * 100 + 220, x[1] * 100 + 120] for x in points]
+
+    # filter points
+    points_filtered = []
+    for p in points_scaled:
+        if accept_point(p[0], p[1]):
+            points_filtered.append(p)
+            
+    # randomly select 5 points for each polynomial
+    points_top = np.random.rand(5, 2)
+    points_top_scaled = [[x[0] * 10 + 265, x[1] * 10 + 195] for x in points_top]
+
+    points_bottom = np.random.rand(5, 2)
+    points_bottom_scaled = [[x[0] * 10 + 265, x[1] * 10 + 135] for x in points_bottom]
+
+    points_left = np.random.rand(5, 2)
+    points_left_scaled = [[x[0] * 10 + 225, x[1] * 10 + 165] for x in points_left]
+
+    points_right = np.random.rand(5, 2)
+    points_right_scaled = [[x[0] * 10 + 305, x[1] * 10 + 165] for x in points_right]
+
+    # create y values
+    y = [0]*len(points_filtered)
+    y.extend([1]*20)
+
+    # join X values
+    X = points_filtered.copy()
+    X.extend(points_top_scaled)
+    X.extend(points_bottom_scaled)
+    X.extend(points_left_scaled)
+    X.extend(points_right_scaled)
+
+    return np.array(X), np.array(y)
