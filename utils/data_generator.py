@@ -4,7 +4,7 @@ from sklearn.datasets import make_circles
 
 def generate_synthetic_clusters():
     # read synthetic csv
-    synthetic_df = pd.read_csv("data/synthetic.csv")
+    synthetic_df = pd.read_csv("../data/synthetic.csv")
 
     # retrieve X
     X = np.column_stack((synthetic_df["4"], synthetic_df["5"]))
