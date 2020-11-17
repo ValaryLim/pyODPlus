@@ -218,8 +218,8 @@ class ROCF():
                     if (v in k_nearest_neighbours[v_neighbours]) and (not visited[v_neighbours]):
                         # mark as visited, label cluster group
                         visited[v_neighbours] = True
-                        cluster_labels[v] = label
-                        current_cluster.add(v)
+                        cluster_labels[v_neighbours] = label
+                        current_cluster.add(v_neighbours)
 
                         # if v is a mutual neighbour and is not visited
                         mutual_neighbours.put(v_neighbours)
